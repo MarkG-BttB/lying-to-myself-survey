@@ -68,6 +68,20 @@
     border-radius: 10px;
     padding: 10px 14px;
   }
+  .scale-legend-compact {
+    margin: 0 0 8px;
+    padding: 7px 12px;
+    font-size: 0.78rem;
+    gap: 6px;
+  }
+  .scale-legend-compact strong { color: var(--navy); }
+  @media (max-width: 480px) {
+    .scale-legend-compact {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px 10px;
+    }
+  }
   button {
     font-family: inherit;
     cursor: pointer;
@@ -316,6 +330,11 @@
   <!-- SCREEN: SURVEY -->
   <section id="screen-survey" class="hidden">
     <div id="progress-wrap">
+      <div class="scale-legend scale-legend-compact">
+        <span><strong>0</strong> = Not like me at all</span>
+        <span><strong>5</strong> = Sometimes true / unsure</span>
+        <span><strong>10</strong> = Very true of me</span>
+      </div>
       <div id="progress-track"><div id="progress-fill"></div></div>
       <div id="progress-label">0 of 20 answered</div>
     </div>
