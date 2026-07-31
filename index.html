@@ -23,6 +23,7 @@
   html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
     background: var(--bg);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Georgia, "Helvetica Neue", Arial, sans-serif;
@@ -32,6 +33,9 @@
     max-width: 720px;
     margin: 0 auto;
     padding: 20px 16px 60px;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .card {
     background: var(--card);
@@ -493,26 +497,12 @@
   }
 
   function scrollToTop() {
-    // When embedded in an iframe (e.g. a Wix HTML embed), the iframe itself
-    // doesn't scroll internally — the parent page does. Reach up to the
-    // parent so "top" means the top of the widget on the host page, not
-    // just the top of our own (invisible) internal scroll position.
-    // Deliberately instant (no "smooth"): smooth scrollIntoView silently
-    // no-ops across a frame boundary without real user-gesture activation
-    // in some browsers, so instant is the reliable choice here.
-    try {
-      if (window.frameElement && window.frameElement.scrollIntoView) {
-        window.frameElement.scrollIntoView({ block: "start" });
-        return;
-      }
-    } catch (e) { /* cross-origin iframe, fall through */ }
-    try {
-      if (window.parent && window.parent !== window && window.parent.scrollTo) {
-        window.parent.scrollTo(0, 0);
-        return;
-      }
-    } catch (e) { /* cross-origin iframe, fall through */ }
-    window.scrollTo(0, 0);
+    // #app is its own internal scroll container (see CSS: height:100% +
+    // overflow-y:auto). This keeps scrolling entirely inside our own
+    // document, so it works no matter how the host page embeds us —
+    // no dependency on reaching into a (likely cross-origin) parent frame.
+    var app = document.getElementById("app");
+    if (app) app.scrollTop = 0;
   }
 
   var answers = {}; // { 1: 7, 2: 3, ... } 1-indexed
