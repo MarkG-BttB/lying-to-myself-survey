@@ -49,7 +49,7 @@ margin: 0 auto;
 padding: 20px 16px 60px;
 height: 100%;
 overflow-y: auto;
--webkit-overflow-scrolling: touch;
+overscroll-behavior-y: contain;
 }
 .card {
 background: var(--card);
@@ -510,6 +510,16 @@ function scrollToTop() {
 var app = document.getElementById("app");
 if (app) app.scrollTop = 0;
 }
+function setAppHeight() {
+// CSS height:100% through a cross-origin iframe is an unreliable spot in
+// mobile Safari specifically. Measuring window.innerHeight directly in
+// JS sidesteps that ambiguity instead of hoping the percentage cascade
+// resolves correctly.
+var app = document.getElementById("app");
+if (app) app.style.height = window.innerHeight + "px";
+}
+setAppHeight();
+window.addEventListener("resize", setAppHeight);
 var answers = {};
 var screenIntro = document.getElementById("screen-intro");
 var screenSurvey = document.getElementById("screen-survey");
