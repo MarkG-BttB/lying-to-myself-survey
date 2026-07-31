@@ -492,6 +492,29 @@
     return TOTAL_BANDS[TOTAL_BANDS.length - 1];
   }
 
+  function scrollToTop() {
+    // When embedded in an iframe (e.g. a Wix HTML embed), the iframe itself
+    // doesn't scroll internally — the parent page does. Reach up to the
+    // parent so "top" means the top of the widget on the host page, not
+    // just the top of our own (invisible) internal scroll position.
+    // Deliberately instant (no "smooth"): smooth scrollIntoView silently
+    // no-ops across a frame boundary without real user-gesture activation
+    // in some browsers, so instant is the reliable choice here.
+    try {
+      if (window.frameElement && window.frameElement.scrollIntoView) {
+        window.frameElement.scrollIntoView({ block: "start" });
+        return;
+      }
+    } catch (e) { /* cross-origin iframe, fall through */ }
+    try {
+      if (window.parent && window.parent !== window && window.parent.scrollTo) {
+        window.parent.scrollTo(0, 0);
+        return;
+      }
+    } catch (e) { /* cross-origin iframe, fall through */ }
+    window.scrollTo(0, 0);
+  }
+
   var answers = {}; // { 1: 7, 2: 3, ... } 1-indexed
 
   var screenIntro = document.getElementById("screen-intro");
@@ -548,7 +571,7 @@
   document.getElementById("btn-start").addEventListener("click", function () {
     screenIntro.classList.add("hidden");
     screenSurvey.classList.remove("hidden");
-    window.scrollTo(0, 0);
+    scrollToTop();
   });
 
   document.getElementById("btn-see-results").addEventListener("click", function () {
@@ -624,7 +647,7 @@
 
     screenSurvey.classList.add("hidden");
     screenResults.classList.remove("hidden");
-    window.scrollTo(0, 0);
+    scrollToTop();
   }
 
   document.getElementById("reflection-form").addEventListener("submit", function (e) {
